@@ -3,7 +3,8 @@
 import { useTicTacToe } from "./hook";
 
 export default function TicTaeToePage() {
-  const { currentPlayer, board, result } = useTicTacToe();
+  const { currentPlayer, board, result, getHandleBoardItemClick } =
+    useTicTacToe();
 
   const message = (() => {
     if (result !== undefined) {
@@ -21,10 +22,16 @@ export default function TicTaeToePage() {
         <div>
           <p className="mb-4">{message}</p>
           <div>
-            {board.map((row, y) => (
-              <div className="flex" key={`${y}`}>
-                {row.map((value, x) => (
-                  <div className="w-20 h-20 border" key={`${x},${y}`}></div>
+            {board.map((row, rowNum) => (
+              <div className="flex" key={`${rowNum}`}>
+                {row.map((value, colNum) => (
+                  <div
+                    className="w-20 h-20 border"
+                    key={`${rowNum},${colNum}`}
+                    onClick={getHandleBoardItemClick(rowNum, colNum)}
+                  >
+                    {value}
+                  </div>
                 ))}
               </div>
             ))}
