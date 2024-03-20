@@ -1,15 +1,19 @@
+"use client";
+
+import { useTicTacToe } from "./hook";
+
 export default function TicTaeToePage() {
-  const board = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null],
-  ];
+  const { currentPlayer, board, winner } = useTicTacToe();
+
+  const message = winner
+    ? `Winner: ${winner}`
+    : `Current Player: ${currentPlayer}`;
 
   return (
     <main>
       <div className="flex p-12 gap-8">
         <div>
-          <p className="mb-4">Next Player: X</p>
+          <p className="mb-4">{message}</p>
           <div>
             {board.map((row, y) => (
               <div className="flex" key={`${y}`}>
