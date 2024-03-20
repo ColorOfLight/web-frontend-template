@@ -3,11 +3,17 @@
 import { useTicTacToe } from "./hook";
 
 export default function TicTaeToePage() {
-  const { currentPlayer, board, winner } = useTicTacToe();
+  const { currentPlayer, board, result } = useTicTacToe();
 
-  const message = winner
-    ? `Winner: ${winner}`
-    : `Current Player: ${currentPlayer}`;
+  const message = (() => {
+    if (result !== undefined) {
+      if (result === "win-O") return "Winner: O";
+      if (result === "win-X") return "Winner: X";
+      if (result === "draw") return "Draw";
+      throw new Error("Result should be win-${Player}, draw or undefined");
+    }
+    return `Current Player: ${currentPlayer}`;
+  })();
 
   return (
     <main>

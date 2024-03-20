@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Board, Player } from "./type";
+import { Board, Player, Result } from "./type";
 
 export const useTicTacToe = () => {
   const [board, setBoard] = useState<Board>([
@@ -9,11 +9,11 @@ export const useTicTacToe = () => {
     [undefined, undefined, undefined],
   ]);
   const [currentPlayer, setCurrentPlayer] = useState<Player>("O");
-  const [winner, setWinner] = useState<Player | undefined>(undefined);
+  const [result, setResult] = useState<Result | undefined>(undefined);
 
   return {
     board,
     currentPlayer,
-    winner,
+    result,
   };
 };
