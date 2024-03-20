@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 
-import { Board, Player, Result } from "./type";
+import { Board, Player, Result, History } from "./type";
 import {
   deepCopy2DArrayWithChange,
   getBoardWinner,
@@ -14,7 +14,9 @@ export const useTicTacToe = () => {
     [undefined, undefined, undefined],
   ]);
   const [currentPlayer, setCurrentPlayer] = useState<Player>("O");
-  const [result, setResult] = useState<Result | undefined>(undefined);
+  const [result, setResult] = useState<Result>(undefined);
+  const [histories, setHistories] = useState<History[]>([]);
+  const [currentHistoryIndex, setCurrentHistoryIndex] = useState<number>();
 
   const toggleCurrentPlayer = useCallback(() => {
     if (currentPlayer === "O") setCurrentPlayer("X");
@@ -23,17 +25,6 @@ export const useTicTacToe = () => {
       throw new Error("TypeError: Player cannot be set except O or X!");
     }
   }, [currentPlayer]);
-
-  const updateBoardStatus = useCallback(
-    (newBoard: Board) => {
-      toggleCurrentPlayer();
-
-      const winner = getBoardWinner(newBoard);
-      if (winner != null) setResult(`win-${winner}`);
-      if (checkBoardFull(newBoard)) setResult("draw");
-    },
-    [toggleCurrentPlayer]
-  );
 
   const getHandleBoardItemClick = useCallback(
     (rowNum: number, colNum: number) => () => {
@@ -59,16 +50,77 @@ export const useTicTacToe = () => {
         colNum,
         currentPlayer
       );
+      let newResult: Result = result;
+
       setBoard(newBoard);
-      updateBoardStatus(newBoard);
+
+      toggleCurrentPlayer();
+
+      const winner = getBoardWinner(newBoard);
+      if (winner != null) {
+        newResult = `win-${winner}`;
+      }
+      if (checkBoardFull(newBoard)) {
+        newResult = "draw";
+      }
+
+      setResult(newResult);
+
+      setHistories([
+        ...(currentHistoryIndex != null
+          ? histories.slice(0, currentHistoryIndex + 1)
+          : []),
+        {
+          player: currentPlayer,
+          playedRowNum: rowNum,
+          playedColNum: colNum,
+          board: newBoard,
+          result: newResult,
+        },
+      ]);
+      setCurrentHistoryIndex(
+        currentHistoryIndex != null ? currentHistoryIndex + 1 : 0
+      );
     },
-    [board, currentPlayer, updateBoardStatus, result]
+    [
+      board,
+      currentPlayer,
+      result,
+      histories,
+      currentHistoryIndex,
+      toggleCurrentPlayer,
+    ]
+  );
+
+  const getHandleHistoryClick = useCallback(
+    (index: number) => () => {
+      // TODO: add user feedback
+      if (index === currentHistoryIndex) return;
+
+      if (index >= histories.length)
+        throw new Error("RangeError: index cannot exceed histories length!");
+
+      const {
+        board: historyBoard,
+        player: historyPlayer,
+        result: historyResult,
+      } = histories[index];
+
+      setBoard(historyBoard);
+      setResult(historyResult);
+      setCurrentPlayer(historyPlayer === "X" ? "O" : "X");
+      setCurrentHistoryIndex(index);
+    },
+    [currentHistoryIndex, histories]
   );
 
   return {
     board,
     currentPlayer,
     result,
+    histories,
+    currentHistoryIndex,
     getHandleBoardItemClick,
+    getHandleHistoryClick,
   };
 };

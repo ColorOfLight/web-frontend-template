@@ -3,8 +3,15 @@
 import { useTicTacToe } from "./hook";
 
 export default function TicTaeToePage() {
-  const { currentPlayer, board, result, getHandleBoardItemClick } =
-    useTicTacToe();
+  const {
+    currentPlayer,
+    board,
+    result,
+    histories,
+    currentHistoryIndex,
+    getHandleBoardItemClick,
+    getHandleHistoryClick,
+  } = useTicTacToe();
 
   const message = (() => {
     if (result !== undefined) {
@@ -39,14 +46,17 @@ export default function TicTaeToePage() {
         </div>
         <div>
           <ol>
-            <li>
-              <button>1. Player: X, Position: (1, 1)</button>
-            </li>
-            <li>
-              <button className="font-bold">
-                2. Player: Y, Position: (2, 1)
-              </button>
-            </li>
+            {histories.map(({ player, playedRowNum, playedColNum }, index) => (
+              <li key={index + player + playedRowNum + playedColNum}>
+                <button
+                  className={index === currentHistoryIndex ? "font-bold" : ""}
+                  onClick={getHandleHistoryClick(index)}
+                >
+                  {index + 1}. Player: {player}, ({playedRowNum + 1},{" "}
+                  {playedColNum + 1})
+                </button>
+              </li>
+            ))}
           </ol>
         </div>
       </div>
