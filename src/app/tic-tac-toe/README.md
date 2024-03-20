@@ -1,0 +1,14 @@
+# Tic Tac Toe 구현 연습
+
+## 목표
+
+- [React 튜토리얼 사이트](https://react.dev/learn/tutorial-tic-tac-toe)에 있는 Tic Tac Toe 게임을 직접 구현
+
+## 작업 계획
+
+1. UI 구현
+2. 승패를 포함한 기본 게임 로직 구현
+3. 게임 기록 목록 구현
+4. 특정 기록으로 돌아가기 구현
+5. 코드 정리
+
